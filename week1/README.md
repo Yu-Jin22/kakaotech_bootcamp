@@ -7,7 +7,7 @@
 
 ---
 ## 프로그램 클래스 설계도 
-
+![Image](https://github.com/user-attachments/assets/7df7fcef-9d59-4877-ab62-8e3d164ff49e)
 ---
 
 ##  실행 방법
