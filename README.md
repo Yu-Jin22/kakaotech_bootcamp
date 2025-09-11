@@ -1,1 +1,1 @@
-# kakaotech_bootcamp
+# kakao_bootcamp
