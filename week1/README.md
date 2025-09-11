@@ -23,5 +23,5 @@ javac -d out Main.java
 ```
 ### 3. 실행
 ```bash
-java -cp out com.example.menu.AStage
+java -cp out Main
 ```
