@@ -1,1 +1,5 @@
-# kakao_bootcamp
+# kakao_bootcamp assignment✔
+
+|wk |data|Topic|
+|---|----------|----------------------------------------------|
+|wk1|2025.09.08|Java : CLI 프로그램 제작 & 간단 스레드 구현|
