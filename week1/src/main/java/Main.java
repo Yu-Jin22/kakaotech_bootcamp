@@ -2,148 +2,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-// Person 클래스
-class Person {
-    protected String name;
-    protected int age;
-
-    public Person(String name, int age) {
-        this.name = name;
-        this.age = age;
-    }
-
-    public void introduce() {
-        System.out.println("안녕하세요. " + name + "입니다.");
-    }
-
-}
-
-// Customer 클래스 (일반 고객)
-class Customer extends Person {
-    protected int money;
-
-    public Customer(String name, int age, int money) {
-        super(name,age);
-        this.money = money;
-    }
-
-    public void buyItem(Product product, int quantity) {
-        int totalPrice = product.getPrice() * quantity;
-        if (money >= totalPrice) {
-            if (product.getStock() >= quantity) {
-                money -= totalPrice;
-                product.reduceStock(quantity);
-                System.out.println(name + "이(가) " + product.getName() +
-                        " " + quantity + "개를 구매했습니다. 남은 돈: " + money);
-            } else {
-                System.out.println("X 재고 부족: " + product.getName());
-            }
-        } else {
-            System.out.println("X 잔액 부족: " + name);
-        }
-
-    }
-}
-
-// CorporateCustomer 클래스
-class CorporateCustomer extends Customer {
-    private double discountRate = 0.1; // 법인 10% 할인
-
-    public CorporateCustomer(String name, int age,int money) {
-        super(name, age, money);
-    }
-
-    @Override
-    public void buyItem(Product product, int quantity) {
-        int totalPrice = (int) (product.getPrice() * quantity * (1 - discountRate));
-        if (money >= totalPrice) {
-            if (product.getStock() >= quantity) {
-                money -= totalPrice;
-                product.reduceStock(quantity);
-                System.out.println("[법인 할인] " + name + "이(가) " + product.getName() +
-                        " " + quantity + "개를 구매했습니다. 남은 돈: " + money);
-            } else {
-                System.out.println("X 재고 부족: " + product.getName());
-            }
-        } else {
-            System.out.println("X 잔액 부족: " + name);
-        }
-    }
-
-}
-
-class Clerk extends Person {
-    public Clerk(String name, int age) {
-        super(name, age);
-    }
-
-    public void sellItem(Customer customer, Product product, int quantity) {
-        System.out.println(name + " 점원이 " + customer.name + "에게 " +
-                product.getName() + " " + quantity + "개 판매 중...");
-        customer.buyItem(product, quantity);
-    }
-}
-
-// 상품 클래스
-class Product {
-    private String name;
-    private int price;
-    private int stock; // 재고 수량
-
-    public Product(String name, int price, int stock) {
-        this.name = name;
-        this.price = price;
-        this.stock = stock;
-    }
-
-    public void reduceStock(int quantity) {
-        stock -= quantity;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public int getStock() {
-        return stock;
-    }
-
-    public String getName() {
-        return name;
-    }
-}
-
-// 재고 체크 스레드
-class StockChecker implements Runnable {
-    private List<Product> products;
-    private boolean running = true;
-
-    public StockChecker(List<Product> products) {
-        this.products = products;
-    }
-
-    public void stop() {
-        running = false;
-    }
-
-    @Override
-    public void run() {
-        while (running) {
-            System.out.println("\n[재고 점검]");
-            for (Product p : products) {
-                System.out.println(" - " + p.getName() + ": 남은 재고 " + p.getStock());
-            }
-
-            try {
-                Thread.sleep(20000); // 20초마다 재고 확인
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
-        System.out.println("[재고 점검 스레드 종료]");
-    }
-}
-
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -281,6 +139,11 @@ public class Main {
 
         // 9. 쇼핑 종료
         stockChecker.stop(); // 재고 스레드 종료
+        try {
+            stockThread.join();  // 스레드가 진짜 끝날 때까지 대기
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
         System.out.println("\n=== 쇼핑 종료 ===");
 
         sc.close();
